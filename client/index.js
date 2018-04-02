@@ -3,10 +3,6 @@ const socket = io()
 let groceries = []
 
 socket.on('Add', (data) => {
-    if(!validateInput(data)) {
-        return;
-    }
-
     groceries.push(data)
     document.querySelector('#grocery-message').style.display = "none"
     groceries.sort((a, b) => a.name > b.name)
@@ -26,10 +22,16 @@ const handleAdd = () => {
     let inputName = document.querySelector('#name')
     let inputQuantity = document.querySelector('#quantity')
 
-    socket.emit('Add grocery', {
+    var data = {
         name: inputName.value,
         quantity: inputQuantity.value
-    })
+    };
+
+    if(!validateInput(data)) {
+        return;
+    }
+
+    socket.emit('Add grocery', data);
 
     inputName.value = ''
     inputQuantity.value = '1'
