@@ -1,0 +1,39 @@
+
+body {
+    margin-top: 10px;
+    min-width: 320px;
+}
+
+.container {
+    width: 100%;
+}
+
+#list-heading {
+    margin: 5px;
+}
+
+#grocery-message {
+    display: block;
+    font-size: 16px;
+}
+
+#add-grocery-message-invalid, #add-grocery-message-exists {
+    display: none;
+    font-size: 16px;
+}
+
+.page-header {
+    border-bottom: 1px solid #ddd;
+}
+
+.margin-bottom {
+    margin-bottom: 14px;
+}
+
+.margin-top {
+    margin-top: 14px;
+}
+
+#heading {
+    text-align: center;
+}
