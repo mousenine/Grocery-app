@@ -28,7 +28,7 @@ const handleAdd = () => {
     };
 
     if(!validateInput(data)) {
-        return;
+        return
     }
 
     socket.emit('Add grocery', data);
