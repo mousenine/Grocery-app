@@ -4,9 +4,9 @@ let groceries = []
 
 socket.on('Add', (data) => {
     groceries.push(data)
-    document.querySelector('#grocery-message').style.display = "none"
     groceries.sort((a, b) => a.name > b.name)
-
+    
+    noGroceriesMessage(groceries)
     renderView(groceries)
 })
 
@@ -17,6 +17,37 @@ socket.on('Remove', (data) => {
 socket.on('Update', (data) => {
     handleUpdate(groceries, data)
 })
+
+socket.on('Prepare sync data', (data) => {
+    handleSync(data)
+})
+
+socket.on('Sync list', (data) => {
+    groceries = data
+    
+    noGroceriesMessage(groceries)
+    renderView(groceries)
+})
+
+socket.on("List name taken", (data) => {
+    // Handle "register" & "sync" message boxes
+    if(data[0] ===  "list-name") {
+        data[1]
+            ? document.querySelector("#list-name-message").style.display = "block"
+            : document.querySelector("#list-name-message").style.display = "none"
+    } else {
+        data[1]
+            ? document.querySelector("#target-list-name-message").style.display = "none"
+            : document.querySelector("#target-list-name-message").style.display = "block"
+    }
+})
+
+const handleSync = data => {
+    socket.emit("Send sync data", {
+        name: data,
+        list: groceries
+    })
+}
 
 const handleAdd = () => {
     let inputName = document.querySelector('#name')
@@ -45,9 +76,17 @@ const handleUpdate = (elements, data) => {
 const handleRemove = (elements, data) => {
     groceries = elements.filter(el => el.name !== data.name)
     document.getElementById(`name${data.name}`).remove()
-    
-    if(groceries.length === 0) {
-        document.querySelector('#grocery-message').style.display = "block"
+
+    noGroceriesMessage(groceries)
+}
+
+const noGroceriesMessage = data => {
+    const element = document.querySelector("#grocery-message")
+
+    if(data.length === 0) {
+        element.style.display = "block"
+    } else {
+        element.style.display = "none"
     }
 }
 
@@ -152,4 +191,44 @@ document.querySelector('#name').addEventListener('keypress', (e) => {
     if(e.keyCode === 13) {
         handleAdd()
     }
+})
+
+const registerList = (data) => {
+    socket.id = data.value
+    socket.emit("Register list", data.value)
+
+    data.value = ''
+}
+
+const syncList = (element) => {
+    const data = {
+        name: socket.id,
+        nameSync: element.value,
+    }
+
+    socket.emit("Sync lists", data)
+
+    element.value = ''
+}
+
+document.querySelector("#add-list-name").addEventListener('click', () => {
+    let username = document.querySelector("#list-name")
+
+    username.addEventListener('keypress', (e) => {
+        if(e.keyCode === 13) {
+            registerList(username)
+        }
+    })
+    registerList(username)
+})
+
+document.querySelector('#sync-lists').addEventListener('click', () => {
+    let syncUsername = document.querySelector("#target-list-name")
+
+    syncUsername.addEventListener('keypress', (e) => {
+        if(e.keyCode === 13) {
+            syncList(syncUsername)
+        }
+    })
+    syncList(syncUsername)
 })

@@ -17,7 +17,10 @@ body {
     font-size: 16px;
 }
 
-#add-grocery-message-invalid, #add-grocery-message-exists {
+#add-grocery-message-invalid, 
+#add-grocery-message-exists, 
+#list-name-message,
+#target-list-name-message {
     display: none;
     font-size: 16px;
 }
